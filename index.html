@@ -35,7 +35,17 @@
 		input[type="submit"]:hover {
 			background-color: #005fa3;
 		}
-	</style></head><body><h1>Figura bot</h1><p>Lökj egy sort Figunak!</p><form><input type="text" id="input-text" placeholder="Lökj egy sort Figurának"><input type="submit" id="submit-button" value="Mehet!"></form><script>
+		#results {
+            		margin-top: 25px;
+            		padding: 10px;
+            		border: 1px solid grey;
+            		border-radius: 5px;
+            		background-color: white;
+            		color: #333;
+			font-size: 18px;
+			text-align: center;
+        	}
+	</style></head><body><h1>Figura bot</h1><p>Lökj egy sort Figunak!</p><form><input type="text" id="input-text" placeholder="Lökj egy sort Figurának"><input type="submit" id="submit-button" value="Mehet!"></form><div id="results"></div><script>
 		// JavaScript code to handle the form submission goes here
 		const getVowelsFromString = function(line, no) {
             const vowels = [];
