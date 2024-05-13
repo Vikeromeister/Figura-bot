@@ -43,9 +43,9 @@
                 const letter = line[index].toLowerCase();
                 if (["a", "á", "e", "é", "i", "í", "o", "ó", "ö", "ő", "u", "ú", "ü", "ű"].indexOf(letter) !== -1) {
                     vowels.unshift(letter);
-                    if (vowels.length === no) {
-                        break;
-                    }
+                }
+                if (vowels.length === no) {
+                    break;
                 }
             }
             return vowels.join("");
@@ -71,7 +71,7 @@
                 return;
             }
 
-            const sorok = ["Ez egy teszt.", "Ez is egy teszt.", "Ez meg egy teszt?", "Nem ez az?" ];
+            const sorok = ["Pörög a friss liszt", "Kecsenye tíz-tíz", "Hol van a lém?", "Én csak tudni szeretném." ];
             const matchedLines = [];
             let maxMatchingVowels = 0;
 
@@ -87,6 +87,7 @@
             }
 
             const resultsText = document.createElement("p");
+	    resultsText.innerText = "teszt"
             if (maxMatchingVowels > 1) {
                 const chosenLine = matchedLines[Math.floor(Math.random() * matchedLines.length)];
                 resultsText.innerText = `Figura: ${chosenLine}`;
