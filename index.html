@@ -98,7 +98,7 @@
                         Promise.all(fileNames.map(fileName => {
                             return new Promise((resolve, reject) => {
                                 const xhr = new XMLHttpRequest();
-                                xhr.open("GET", `szovegek/${fileName}`);
+                                xhr.open("GET", "${fileName}");
                                 xhr.onreadystatechange = function() {
                                     if (xhr.readyState === 4) {
                                         if (xhr.status === 200) {
