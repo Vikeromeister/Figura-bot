@@ -81,30 +81,78 @@
                 return;
             }
 
-            const sorok = ["Pörög a friss liszt", "Kecsenye tíz-tíz", "Hol van a lém?", "Én csak tudni szeretném." ];
-            const matchedLines = [];
-            let maxMatchingVowels = 0;
+            const sorok = [];  // Empty array to hold the loaded lines
 
-            for (const line of sorok) {
-                const matchingVowels = compareStrings(line, userInput);
-                if (matchingVowels > maxMatchingVowels) {
-                    matchedLines.length = 0;
-                    matchedLines.push(line);
-                    maxMatchingVowels = matchingVowels;
-                } else if (matchingVowels === maxMatchingVowels) {
-                    matchedLines.push(line);
+            // Use XMLHttpRequest to load the directory listing for the "szovegek" folder
+            const xhr = new XMLHttpRequest();
+            xhr.open("GET", "szovegek/");
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === 4) {
+                    if (xhr.status === 200) {
+                        // When the directory listing has been loaded, filter it to get only the .txt files
+                        const fileNames = xhr.responseText
+                            .split('\n')
+                            .filter(fileName => /\.txt$/.test(fileName.trim()));
+                            
+                        // Use Promise.all() to load all files asynchronously
+                        Promise.all(fileNames.map(fileName => {
+                            return new Promise((resolve, reject) => {
+                                const xhr = new XMLHttpRequest();
+                                xhr.open("GET", `szovegek/${fileName}`);
+                                xhr.onreadystatechange = function() {
+                                    if (xhr.readyState === 4) {
+                                        if (xhr.status === 200) {
+                                            resolve(xhr.responseText);
+                                        } else {
+                                            reject(`Error loading ${fileName}: ${xhr.statusText}`);
+                                        }
+                                    }
+                                };
+                                xhr.send();
+                            });
+                        })).then(responses => {
+                            // Concatenate the loaded responses into a single array of lines
+                            responses.forEach(response => {
+                                sorok.push(...response.trim().split('\n'));
+                            });
+
+                            const matchedLines = [];
+                            let maxMatchingVowels = 0;
+
+                            for (const line of sorok) {
+                                const matchingVowels = compareStrings(line, userInput);
+                                if (matchingVowels > maxMatchingVowels) {
+                                    matchedLines.length = 0;
+                                    matchedLines.push(line);
+                                    maxMatchingVowels = matchingVowels;
+                                } else if (matchingVowels === maxMatchingVowels) {
+                                    matchedLines.push(line);
+                                }
+                            }
+
+                            const resultsText = document.createElement("p");
+                            if (maxMatchingVowels > 1) {
+                                const chosenLine = matchedLines[Math.floor(Math.random() * matchedLines.length)];
+                                resultsText.innerText = `Figura: ${chosenLine}`;
+                            } else {
+                                resultsText.innerText = "Nincs meccs a bemenettel.";
+                            }
+                            resultsDiv.innerHTML = "";
+                            resultsDiv.appendChild(resultsText);
+                        }).catch(error => {
+                            const resultsText = document.createElement("p");
+                            resultsText.innerText = error;
+                            resultsDiv.innerHTML = "";
+                            resultsDiv.appendChild(resultsText);
+                        });
+                    } else {
+                        const resultsText = document.createElement("p");
+                        resultsText.innerText = `Error loading directory listing for szovegek/: ${xhr.statusText}`;
+                        resultsDiv.innerHTML = "";
+                        resultsDiv.appendChild(resultsText);
+                    }
                 }
-            }
-
-            const resultsText = document.createElement("p");
-	    resultsText.innerText = "teszt"
-            if (maxMatchingVowels > 1) {
-                const chosenLine = matchedLines[Math.floor(Math.random() * matchedLines.length)];
-                resultsText.innerText = `Figura: ${chosenLine}`;
-            } else {
-                resultsText.innerText = "Nincs meccs a bemenettel.";
-            }
-            resultsDiv.innerHTML = "";
-            resultsDiv.appendChild(resultsText);
+            };
+            xhr.send();
         });
-	</script></body></html>
+    </script></body></html>
