@@ -147,7 +147,7 @@
                         });
                     } else {
                         const resultsText = document.createElement("p");
-                        resultsText.innerText = `Error loading directory listing for szovegek/: ${xhr.statusText}`;
+                        resultsText.innerText = `Error loading directory listing: ${xhr.statusText}`;
                         resultsDiv.innerHTML = "";
                         resultsDiv.appendChild(resultsText);
                     }
