@@ -38,54 +38,62 @@
 	</style></head><body><h1>Figura bot</h1><p>Lökj egy sort Figunak!</p><form><input type="text" id="input-text" placeholder="Lökj egy sort Figurának"><input type="submit" id="submit-button" value="Mehet!"></form><script>
 		// JavaScript code to handle the form submission goes here
 		const getVowelsFromString = function(line, no) {
-			const vowels = [];
-			for (let index = line.length - 1; index >= 0; index--) {
-				const letter = line[index].toLowerCase();
-				if (["a", "á", "e", "é", "i", "í", "o", "ó", "ö", "ő", "u", "ú", "ü", "ű"].indexOf(letter) !== -1) {
-					vowels.unshift(letter);
-					if (vowels.length >= no) {
-						break;
-					}
-				}
-			}
-			return vowels.join("");
-		};
-		
-		const compareStrings = function(line1, line2) {
-			let i = 1;
-			while (getVowelsFromString(line1, i) === getVowelsFromString(line2, i) && getVowelsFromString(line1, i).length === i) {
-				i++;
-			}
-			return i - 1;
-		};
-		
-		// Get references to the input text box and submit button
-		const inputText = document.getElementById("input-text");
-		const submitButton = document.getElementById("submit-button");
+            const vowels = [];
+            for (let index = line.length - 1; index >= 0; index--) {
+                const letter = line[index].toLowerCase();
+                if (["a", "á", "e", "é", "i", "í", "o", "ó", "ö", "ő", "u", "ú", "ü", "ű"].indexOf(letter) !== -1) {
+                    vowels.unshift(letter);
+                    if (vowels.length === no) {
+                        break;
+                    }
+                }
+            }
+            return vowels.join("");
+        };
 
-		// Add an event listener to the submit button that runs the matching algorithm with the user input
-		submitButton.addEventListener("click", function(event) {
-			event.preventDefault();	// Prevent the form from actually submitting
-			
-			const userInput = inputText.value;
-			const sorok = ["Ez egy teszt.", "Ez is egy teszt.", "Ez meg egy teszt?", "Nem ez az?" ];
-			const matchedLines = [];
-			let maxMatchingVowels = 0;
-			
-			for (const line of sorok) {
-				const matchingVowels = compareStrings(line, userInput);
-				if (matchingVowels > maxMatchingVowels) {
-					matchedLines.length = 0;
-					matchedLines.push(line);
-					maxMatchingVowels = matchingVowels;
-				} else if (matchingVowels === maxMatchingVowels) {
-					matchedLines.push(line);
-				}
-			}
-			
-			if (maxMatchingVowels > 1) {
-				const chosenLine = matchedLines[Math.floor(Math.random() * matchedLines.length)];
-				window.alert("Figura: " + chosenLine);
-			}
-		});
+        const compareStrings = function(line1, line2) {
+            let i = 1;
+            while (getVowelsFromString(line1, i) === getVowelsFromString(line2, i) && getVowelsFromString(line1, i).length === i) {
+                i++;
+            }
+            return i - 1;
+        };
+
+        const inputText = document.getElementById("input-text");
+        const submitButton = document.getElementById("submit-button");
+        const resultsDiv = document.getElementById("results");
+
+        submitButton.addEventListener("click", function(event) {
+            event.preventDefault();
+
+            const userInput = inputText.value.trim();
+            if (userInput === "") {
+                return;
+            }
+
+            const sorok = ["Ez egy teszt.", "Ez is egy teszt.", "Ez meg egy teszt?", "Nem ez az?" ];
+            const matchedLines = [];
+            let maxMatchingVowels = 0;
+
+            for (const line of sorok) {
+                const matchingVowels = compareStrings(line, userInput);
+                if (matchingVowels > maxMatchingVowels) {
+                    matchedLines.length = 0;
+                    matchedLines.push(line);
+                    maxMatchingVowels = matchingVowels;
+                } else if (matchingVowels === maxMatchingVowels) {
+                    matchedLines.push(line);
+                }
+            }
+
+            const resultsText = document.createElement("p");
+            if (maxMatchingVowels > 1) {
+                const chosenLine = matchedLines[Math.floor(Math.random() * matchedLines.length)];
+                resultsText.innerText = `Figura: ${chosenLine}`;
+            } else {
+                resultsText.innerText = "Nincs meccs a bemenettel.";
+            }
+            resultsDiv.innerHTML = "";
+            resultsDiv.appendChild(resultsText);
+        });
 	</script></body></html>
