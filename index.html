@@ -119,21 +119,21 @@ submitButton.addEventListener("click", function(event) {
       });
 
       const matchedLines = [];
-      let maxMatchingVowels = 0;
-      let resultFileInfo = ""; // Variable to store file information
+let maxMatchingVowels = 0;
+let resultFileInfo = "";
 
-      for (let i = 0; i < sorok.length; i++) {
-        const line = sorok[i];
-        const matchingVowels = compareStrings(line, userInput);
-        if (matchingVowels > maxMatchingVowels) {
-          matchedLines.length = 0;
-          matchedLines.push(line);
-          maxMatchingVowels = matchingVowels;
-          resultFileInfo = fileNames[i].replace(/^.*[\\\/]/, "").slice(0, -4); // Add file name
-        } else if (matchingVowels === maxMatchingVowels) {
-          matchedLines.push(line);
-        }
-      }
+for (let i = 0; i < sorok.length; i++) {
+  const line = sorok[i];
+  const matchingVowels = compareStrings(line, userInput);
+  if (matchingVowels > maxMatchingVowels) {
+    matchedLines.length = 0;
+    matchedLines.push(line);
+    maxMatchingVowels = matchingVowels;
+    resultFileInfo = fileNames[i].split('/').pop().split('.').slice(0, -1).join('.');
+  } else if (matchingVowels === maxMatchingVowels) {
+    matchedLines.push(line);
+  }
+}
 
       const resultsText = document.createElement("p");
       if (matchedLines.length > 0) {
