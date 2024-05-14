@@ -122,26 +122,45 @@ submitButton.addEventListener("click", function(event) {
 let maxMatchingVowels = 0;
 let resultFileInfo = "";
 
-for (let i = 0; i < sorok.length; i++) {
-  const line = sorok[i];
-  const matchingVowels = compareStrings(line, userInput);
-  if (matchingVowels > maxMatchingVowels) {
-    matchedLines.length = 0;
-    matchedLines.push(line);
-    maxMatchingVowels = matchingVowels;
-    const lineIndex = sorok.indexOf(line);
-    if (lineIndex !== -1) {
-      for (let j = 0; j < fileNames.length; j++) {
-        const fileName = fileNames[j];
-        if (fileName.includes(lineIndex + 1)) {
-          resultFileInfo = fileName.split('/').pop().split('.').slice(0, -1).join('.');
-          break;
-        }
+for (let i = 0; i < fileNames.length; i++) {
+  const fileName = fileNames[i];
+  const xhr = new XMLHttpRequest();
+  xhr.open("GET", fileName, false);
+  xhr.send(null);
+  if (xhr.status === 200) {
+    const fileContent = xhr.responseText;
+          
+    fileContent.split('\n').forEach(line => {
+      const matchingVowels = compareStrings(line, userInput);
+      if (matchingVowels > maxMatchingVowels) {
+        matchedLines.length = 0;
+        matchedLines.push(line);
+        maxMatchingVowels = matchingVowels;
+        resultFileInfo = fileName.split('/').pop().split('.').slice(0, -1).join('.');
+      } else if (matchingVowels === maxMatchingVowels) {
+        matchedLines.push(line);
       }
-    }
-  } else if (matchingVowels === maxMatchingVowels) {
-    matchedLines.push(line);
+    });
   }
+}
+
+if (matchedLines.length > 0) {
+  const chosenLine = matchedLines[Math.floor(Math.random() * matchedLines.length)];
+  const resultsText = document.createElement("p");
+  resultsText.innerText = `Figura: ${chosenLine}`;
+  resultsDiv.innerHTML = "";
+  resultsDiv.appendChild(resultsText);
+  
+  const fileInfoText = document.createElement("p");
+  fileInfoText.style.fontSize = "14px";
+  fileInfoText.style.color = "#666";
+  fileInfoText.innerText = `${resultFileInfo}`;
+  resultsDiv.appendChild(fileInfoText);
+} else {
+  const resultsText = document.createElement("p");
+  resultsText.innerText = "Nincs meccs a bemenettel.";
+  resultsDiv.innerHTML = "";
+  resultsDiv.appendChild(resultsText);
 }
 
       const resultsText = document.createElement("p");
