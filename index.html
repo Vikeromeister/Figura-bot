@@ -45,6 +45,24 @@
 			font-size: 18px;
 			text-align: center;
         	}
+	/* Increase font sizes when viewed on a phone */
+@media screen and (max-width: 480px) {
+  body {
+    font-size: 24px;
+  }
+  
+  input[type="text"] {
+    font-size: 20px;
+  }
+  
+  input[type="submit"] {
+    font-size: 20px;
+  }
+  
+  #results {
+    font-size: 24px;
+  }
+}
 	</style></head><body><h1>Figura rím bot</h1><p>Lökj egy sort Figunak!</p><form><input type="text" id="input-text" placeholder="Lökj egy sort Figunak"><input type="submit" id="submit-button" value="Mehet!"></form><div id="results"></div><script>
 		// JavaScript code to handle the form submission goes here
 const getVowelsFromString = function(line, no) {
