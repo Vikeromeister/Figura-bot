@@ -1,108 +1,103 @@
 <!DOCTYPE html><html><head><title>Figura Rím Bot</title><style>
 		/* CSS styles go here */
 	body {
-			font-family: Arial, sans-serif;
-			background-color: #f5f5f5;
-			text-align: center;
-			padding-top: 50px;
-		}
-		input[type="text"] {
-			display: inline-block;
-			vertical-align: middle;
-			margin-right: 10px;
-			border: none;
-			border-radius: 5px;
-			padding: 10px;
-			font-size: 18px;
-			width: 80%;
-			max-width: 400px;
-			box-shadow: 2px 2px 5px rgba(0,0,0,.2);
-			color: #777;
-		}
-		input[type="text"]:focus {
-			outline: none;
-			box-shadow: 2px 2px 5px rgba(0,0,0,.4);
-		}
-		input[type="submit"] {
-			display: inline-block;
-			vertical-align: middle;
-			width: 120px;
-			background-color: #0077cc;
-			border: none;
-			border-radius: 5px;
-			color: #fff;
-			font-size: 18px;
-			font-weight: bold;
-			padding: 10px 20px;
-			margin-left: 10px;
-			box-shadow: 2px 2px 5px rgba(0,0,0,.2);
-			cursor: pointer;
-		}
-		input[type="submit"]:hover {
-			background-color: #005fa3;
-		}
-		#results {
-            		margin-top: 25px;
-            		padding: 10px;
-            		border: 1px solid grey;
-            		border-radius: 5px;
-            		background-color: white;
-            		color: #333;
-			font-size: 18px;
-			text-align: center;
-			width: 800px;
-        	}
+		font-family: Arial, sans-serif;
+		background-color: #f5f5f5;
+		text-align: center;
+		padding-top: 50px;
+	}
+	input[type="text"] {
+		display: inline-block;
+		vertical-align: middle;
+		margin-right: 10px;
+		border: none;
+		border-radius: 5px;
+		padding: 10px;
+		font-size: 18px;
+		width: 80%;
+		max-width: 400px;
+		box-shadow: 2px 2px 5px rgba(0,0,0,.2);
+		color: #777;
+	}
+	input[type="text"]:focus {
+		outline: none;
+		box-shadow: 2px 2px 5px rgba(0,0,0,.4);
+	}
+	input[type="submit"] {
+		display: inline-block;
+		vertical-align: middle;
+		width: 120px;
+		background-color: #0077cc;
+		border: none;
+		border-radius: 5px;
+		color: #fff;
+		font-size: 18px;
+		font-weight: bold;
+		padding: 10px 20px;
+		margin-left: 10px;
+		box-shadow: 2px 2px 5px rgba(0,0,0,.2);
+		cursor: pointer;
+	}
+	input[type="submit"]:hover {
+		background-color: #005fa3;
+	}
+	#results {
+		margin-top: 25px;
+		padding: 10px;
+		border: 1px solid grey;
+		border-radius: 5px;
+		background-color: white;
+		color: #333;
+		font-size: 18px;
+		text-align: center;
+		width: 800px;
+	}
 	/* Increase font sizes when viewed on a phone */
-@media screen and (max-width: 1080px) {
-  body {
-    font-size: 32px;
-  }
-  
-  input[type="text"],
-  input[type="submit"] {
-    display: block;
-    width: 100%;
-    margin: auto;
-    font-size: 24px;
-    text-align: center;
-    horizontal-align: center;
-    margin-top: 10;
-    width: auto;
-    font-size: 24px;
-    text-align: center;
-  }
-}
-	</style></head><body><h1>Figura rím bot</h1><p>Lökj egy sort Figunak!</p><form><input type="text" id="input-text" placeholder="Lökj egy sort Figunak"><input type="submit" id="submit-button" value="Mehet!"></form><div id="results"></div><script>
+	@media screen and (max-width: 1080px) {
+		body {
+	    	font-size: 32px;
+	  	}
+	  	input[type="text"],
+	  	input[type="submit"] {
+		    display: block;
+		    width: 100%;
+		    margin: auto;
+		    font-size: 24px;
+		    text-align: center;
+		    horizontal-align: center;
+		    margin-top: 10px;
+		    width: auto;
+		    font-size: 24px;
+		    text-align: center;
+		}
+	}
+</style></head><body><h1>Figura rím bot</h1><p>Lökj egy sort Figunak!</p><form><input type="text" id="input-text" placeholder=" "><input type="submit" id="submit-button" value="Mehet!"></form><div id="results"></div><script>
 		// JavaScript code to handle the form submission goes here
 const getVowelsFromString = function(line, no) {
-  const vowels = [];
-  for (let index = line.length - 1; index >= 0; index--) {
-    const letter = line[index].toLowerCase();
-    if (
-      ["a", "á", "e", "é", "i", "í", "o", "ó", "ö", "ő", "u", "ú", "ü", "ű"].indexOf(
-        letter
-      ) !== -1
-    ) {
-      vowels.unshift(letter);
-    }
-    if (vowels.length === no) {
-      break;
-    }
-  }
-  return vowels.join("");
+	const vowels = [];
+	for (let index = line.length - 1; index >= 0; index--) {
+		const letter = line[index].toLowerCase();
+	    if (["a", "á", "e", "é", "i", "í", "o", "ó", "ö", "ő", "u", "ú", "ü", "ű"].indexOf(letter) !== -1) {
+	    	vowels.unshift(letter);
+	    }
+	    if (vowels.length === no) {
+	    	break;
+	    }
+	}
+	return vowels.join("");
 };
 
 const compareStrings = function(line1, line2) {
-  let i = 1;
-  while (
-    getVowelsFromString(line1, i) === getVowelsFromString(line2, i) &&
-    getVowelsFromString(line1, i).length === i
-  ) {
-    i++;
-  }
-  return i - 1;
+	let i = 1;
+	while (
+	    getVowelsFromString(line1, i) === getVowelsFromString(line2, i) &&
+	    getVowelsFromString(line1, i).length === i
+  	) {
+    	i++;
+  	}
+  	return i - 1;
 };
-
+	
 const inputText = document.getElementById("input-text");
 const submitButton = document.getElementById("submit-button");
 const resultsDiv = document.getElementById("results");
@@ -111,90 +106,86 @@ const resultsDiv = document.getElementById("results");
 const fileNames = ["szovegek/40.txt", "szovegek/Ahha.txt", "szovegek/Crisps.txt", "szovegek/Csermely.txt", "szovegek/Fala Fel.txt", "szovegek/Finoma.txt", "szovegek/HSP.txt", "szovegek/Hétfő.txt", "szovegek/Johnny Test.txt", "szovegek/Jégkori.txt", "szovegek/Kapufa.txt", "szovegek/Meredek.txt", "szovegek/Nutella.txt", "szovegek/OMG.txt", "szovegek/Offbeat.txt", "szovegek/Oh no.txt", "szovegek/Pizsi.txt", "szovegek/Puma.txt", "szovegek/Pápa.txt", "szovegek/Sasuke.txt", "szovegek/Zsé.txt"];
 
 submitButton.addEventListener("click", function(event) {
-  event.preventDefault();
+	event.preventDefault();
 
-  const userInput = inputText.value.trim();
-  if (userInput === "") {
-    return;
-  }
+	const userInput = inputText.value.trim();
+	if (userInput === "") {
+		return;
+	}
+	const sorok = []; // Create an empty array for the lines to be loaded
 
-  const sorok = []; // Create an empty array for the lines to be loaded
+  	// Use a Promise.all() call to load all files asynchronously
+  	Promise.all(
+    	fileNames.map(fileName => {
+      		return new Promise((resolve, reject) => {
+        		const xhr = new XMLHttpRequest();
+        		xhr.open("GET", fileName);
+        		xhr.onreadystatechange = function() {
+          			if (xhr.readyState === 4) {
+            			if (xhr.status === 200) {
+              				resolve(xhr.responseText);
+            			} else {
+              				reject(`Error loading ${fileName}: ${xhr.statusText}`);
+            			}
+         		 	}
+        		};
+        		xhr.send();
+      		});
+    	})
+  	).then(responses => {
+		// Concatenate the loaded responses into a single array of lines
+      	responses.forEach(response => {
+        	sorok.push(...response.trim().split("\n"));
+      	});
 
-  // Use a Promise.all() call to load all files asynchronously
-  Promise.all(
-    fileNames.map(fileName => {
-      return new Promise((resolve, reject) => {
-        const xhr = new XMLHttpRequest();
-        xhr.open("GET", fileName);
-        xhr.onreadystatechange = function() {
-          if (xhr.readyState === 4) {
-            if (xhr.status === 200) {
-              resolve(xhr.responseText);
-            } else {
-              reject(`Error loading ${fileName}: ${xhr.statusText}`);
-            }
-          }
-        };
-        xhr.send();
-      });
-    })
-  )
-    .then(responses => {
-      // Concatenate the loaded responses into a single array of lines
-      responses.forEach(response => {
-        sorok.push(...response.trim().split("\n"));
-      });
-
-      const matchedLines = [];
-let maxMatchingVowels = 0;
-let resultFileInfo = "";
-
-for (let i = 0; i < fileNames.length; i++) {
-  const fileName = fileNames[i];
-  const xhr = new XMLHttpRequest();
-  xhr.open("GET", fileName, false);
-  xhr.send(null);
-  if (xhr.status === 200) {
-    const fileContent = xhr.responseText;
-          
-    fileContent.split('\n').forEach(line => {
-      const matchingVowels = compareStrings(line, userInput);
-      if (matchingVowels > maxMatchingVowels) {
-        matchedLines.length = 0;
-        matchedLines.push(line);
-        maxMatchingVowels = matchingVowels;
-        resultFileInfo = fileName.split('/').pop().split('.').slice(0, -1).join('.');
-      } else if (matchingVowels === maxMatchingVowels) {
-        matchedLines.push(line);
-      }
-    });
-  }
-}
-
-if (matchedLines.length > 0) {
-  const chosenLine = matchedLines[Math.floor(Math.random() * matchedLines.length)];
-  const resultsText = document.createElement("p");
-  resultsText.innerText = `Figura: ${chosenLine}`;
-  resultsDiv.innerHTML = "";
-  resultsDiv.appendChild(resultsText);
-  
-  const fileInfoText = document.createElement("p");
-  fileInfoText.style.fontSize = "14px";
-  fileInfoText.style.color = "#666";
-  fileInfoText.innerText = `${resultFileInfo}`;
-  resultsDiv.appendChild(fileInfoText);
-} else {
-  const resultsText = document.createElement("p");
-  resultsText.innerText = "Nincs meccs a bemenettel.";
-  resultsDiv.innerHTML = "";
-  resultsDiv.appendChild(resultsText);
-}
-    })
-    .catch(error => {
-      const resultsText = document.createElement("p");
-      resultsText.innerText = error;
-      resultsDiv.innerHTML = "";
-      resultsDiv.appendChild(resultsText);
-    });
-});
+	    const matchedLines = [];
+		let maxMatchingVowels = 0;
+		let resultFileInfo = "";
+	
+		for (let i = 0; i < fileNames.length; i++) {
+	  		const fileName = fileNames[i];
+	  		const xhr = new XMLHttpRequest();
+	  		xhr.open("GET", fileName, false);
+	  		xhr.send(null);
+	  		if (xhr.status === 200) {
+	    		const fileContent = xhr.responseText;
+	          
+	    		fileContent.split('\n').forEach(line => {
+	      			const matchingVowels = compareStrings(line, userInput);
+	      			if (matchingVowels > maxMatchingVowels) {
+				        matchedLines.length = 0;
+				        matchedLines.push(line);
+				        maxMatchingVowels = matchingVowels;
+				        resultFileInfo = fileName.split('/').pop().split('.').slice(0, -1).join('.');
+	      			} else if (matchingVowels === maxMatchingVowels) {
+	        			matchedLines.push(line);
+	      			}
+	    		});
+	  		}
+		}
+	
+		if (matchedLines.length > 0) {
+			const chosenLine = matchedLines[Math.floor(Math.random() * matchedLines.length)];
+			const resultsText = document.createElement("p");
+			resultsText.innerText = `Figura: ${chosenLine}`;
+			resultsDiv.innerHTML = "";
+			resultsDiv.appendChild(resultsText);
+		  	const fileInfoText = document.createElement("p");
+		  	fileInfoText.style.fontSize = "14px";
+		  	fileInfoText.style.color = "#666";
+		  	fileInfoText.innerText = `${resultFileInfo}`;
+		  	resultsDiv.appendChild(fileInfoText);
+		} else {
+		  	const resultsText = document.createElement("p");
+			resultsText.innerText = "Nincs meccs a bemenettel.";
+			resultsDiv.innerHTML = "";
+			resultsDiv.appendChild(resultsText);
+		}
+	}).catch(error => {
+	      const resultsText = document.createElement("p");
+	      resultsText.innerText = error;
+	      resultsDiv.innerHTML = "";
+	      resultsDiv.appendChild(resultsText);
+	    });
+	});
     </script></body></html>
