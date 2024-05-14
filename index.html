@@ -129,8 +129,15 @@ for (let i = 0; i < sorok.length; i++) {
     matchedLines.length = 0;
     matchedLines.push(line);
     maxMatchingVowels = matchingVowels;
-    if (fileNames[i]) {
-      resultFileInfo = fileNames[i].split('/').pop().split('.').slice(0, -1).join('.');
+    const lineIndex = sorok.indexOf(line);
+    if (lineIndex !== -1) {
+      for (let j = 0; j < fileNames.length; j++) {
+        const fileName = fileNames[j];
+        if (fileName.includes(lineIndex + 1)) {
+          resultFileInfo = fileName.split('/').pop().split('.').slice(0, -1).join('.');
+          break;
+        }
+      }
     }
   } else if (matchingVowels === maxMatchingVowels) {
     matchedLines.push(line);
