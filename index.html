@@ -162,25 +162,6 @@ if (matchedLines.length > 0) {
   resultsDiv.innerHTML = "";
   resultsDiv.appendChild(resultsText);
 }
-
-      const resultsText = document.createElement("p");
-      if (matchedLines.length > 0) {
-        const chosenLine = matchedLines[Math.floor(Math.random() * matchedLines.length)];
-        resultsText.innerText = `Figura: ${chosenLine}`;
-        resultsDiv.innerHTML = "";
-        resultsDiv.appendChild(resultsText);
-
-        // Create a new paragraph element to display file information
-        const fileInfoText = document.createElement("p");
-        fileInfoText.style.fontSize = "14px";
-        fileInfoText.style.color = "#666";
-        fileInfoText.innerText = `${resultFileInfo}`;
-        resultsDiv.appendChild(fileInfoText);
-      } else {
-        resultsText.innerText = "Erre még Figura sem talált rímet :(";
-        resultsDiv.innerHTML = "";
-        resultsDiv.appendChild(resultsText);
-      }
     })
     .catch(error => {
       const resultsText = document.createElement("p");
