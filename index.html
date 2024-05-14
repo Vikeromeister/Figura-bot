@@ -45,114 +45,120 @@
 			font-size: 18px;
 			text-align: center;
         	}
-	</style></head><body><h1>Figura bot</h1><p>Lökj egy sort Figunak!</p><form><input type="text" id="input-text" placeholder="Lökj egy sort Figurának"><input type="submit" id="submit-button" value="Mehet!"></form><div id="results"></div><script>
+	</style></head><body><h1>Figura rím bot</h1><p>Lökj egy sort Figunak!</p><form><input type="text" id="input-text" placeholder="Lökj egy sort Figunak"><input type="submit" id="submit-button" value="Mehet!"></form><div id="results"></div><script>
 		// JavaScript code to handle the form submission goes here
-		const getVowelsFromString = function(line, no) {
-            const vowels = [];
-            for (let index = line.length - 1; index >= 0; index--) {
-                const letter = line[index].toLowerCase();
-                if (["a", "á", "e", "é", "i", "í", "o", "ó", "ö", "ő", "u", "ú", "ü", "ű"].indexOf(letter) !== -1) {
-                    vowels.unshift(letter);
-                }
-                if (vowels.length === no) {
-                    break;
-                }
+const getVowelsFromString = function(line, no) {
+  const vowels = [];
+  for (let index = line.length - 1; index >= 0; index--) {
+    const letter = line[index].toLowerCase();
+    if (
+      ["a", "á", "e", "é", "i", "í", "o", "ó", "ö", "ő", "u", "ú", "ü", "ű"].indexOf(
+        letter
+      ) !== -1
+    ) {
+      vowels.unshift(letter);
+    }
+    if (vowels.length === no) {
+      break;
+    }
+  }
+  return vowels.join("");
+};
+
+const compareStrings = function(line1, line2) {
+  let i = 1;
+  while (
+    getVowelsFromString(line1, i) === getVowelsFromString(line2, i) &&
+    getVowelsFromString(line1, i).length === i
+  ) {
+    i++;
+  }
+  return i - 1;
+};
+
+const inputText = document.getElementById("input-text");
+const submitButton = document.getElementById("submit-button");
+const resultsDiv = document.getElementById("results");
+
+// Define an array of file paths to load
+const fileNames = ["szovegek/40.txt", "szovegek/Ahha.txt", "szovegek/Crisps.txt", "szovegek/Csermely.txt", "szovegek/Fala Fel.txt", "szovegek/Finoma.txt", "szovegek/HSP.txt", "szovegek/Hétfő.txt", "szovegek/Johnny Test.txt", "szovegek/Jégkori.txt", "szovegek/Kapufa.txt", "szovegek/Meredek.txt", "szovegek/Nutella.txt", "szovegek/OMG.txt", "szovegek/Offbeat.txt", "szovegek/Oh no.txt", "szovegek/Pizsi.txt", "szovegek/Puma.txt", "szovegek/Pápa.txt", "szovegek/Sasuke.txt", "szovegek/Zsé.txt"];
+
+submitButton.addEventListener("click", function(event) {
+  event.preventDefault();
+
+  const userInput = inputText.value.trim();
+  if (userInput === "") {
+    return;
+  }
+
+  const sorok = []; // Create an empty array for the lines to be loaded
+
+  // Use a Promise.all() call to load all files asynchronously
+  Promise.all(
+    fileNames.map(fileName => {
+      return new Promise((resolve, reject) => {
+        const xhr = new XMLHttpRequest();
+        xhr.open("GET", fileName);
+        xhr.onreadystatechange = function() {
+          if (xhr.readyState === 4) {
+            if (xhr.status === 200) {
+              resolve(xhr.responseText);
+            } else {
+              reject(`Error loading ${fileName}: ${xhr.statusText}`);
             }
-            return vowels.join("");
+          }
         };
+        xhr.send();
+      });
+    })
+  )
+    .then(responses => {
+      // Concatenate the loaded responses into a single array of lines
+      responses.forEach(response => {
+        sorok.push(...response.trim().split("\n"));
+      });
 
-        const compareStrings = function(line1, line2) {
-            let i = 1;
-            while (getVowelsFromString(line1, i) === getVowelsFromString(line2, i) && getVowelsFromString(line1, i).length === i) {
-                i++;
-            }
-            return i - 1;
-        };
+      const matchedLines = [];
+      let maxMatchingVowels = 0;
+      let resultFileInfo = ""; // Variable to store file information
 
-        const inputText = document.getElementById("input-text");
-        const submitButton = document.getElementById("submit-button");
-        const resultsDiv = document.getElementById("results");
+      for (let i = 0; i < sorok.length; i++) {
+        const line = sorok[i];
+        const matchingVowels = compareStrings(line, userInput);
+        if (matchingVowels > maxMatchingVowels) {
+          matchedLines.length = 0;
+          matchedLines.push(line);
+          maxMatchingVowels = matchingVowels;
+          resultFileInfo = fileNames[i].replace(/^.*[\\\/]/, "").slice(0, -4); // Add file name
+        } else if (matchingVowels === maxMatchingVowels) {
+          matchedLines.push(line);
+        }
+      }
 
-        submitButton.addEventListener("click", function(event) {
-            event.preventDefault();
+      const resultsText = document.createElement("p");
+      if (matchedLines.length > 0) {
+        const chosenLine = matchedLines[Math.floor(Math.random() * matchedLines.length)];
+        resultsText.innerText = `Figura: ${chosenLine}`;
+        resultsDiv.innerHTML = "";
+        resultsDiv.appendChild(resultsText);
 
-            const userInput = inputText.value.trim();
-            if (userInput === "") {
-                return;
-            }
-
-            const sorok = [];  // Empty array to hold the loaded lines
-
-            // Use XMLHttpRequest to load the directory listing for the "szovegek" folder
-            const xhr = new XMLHttpRequest();
-            xhr.open("GET", "");
-            xhr.onreadystatechange = function() {
-                if (xhr.readyState === 4) {
-                    if (xhr.status === 200) {
-                        // When the directory listing has been loaded, filter it to get only the .txt files
-                        const fileNames = xhr.responseText
-                            .split('\n')
-                            .filter(fileName => /\.txt$/.test(fileName.trim()));
-                            
-                        // Use Promise.all() to load all files asynchronously
-                        Promise.all(fileNames.map(fileName => {
-                            return new Promise((resolve, reject) => {
-                                const xhr = new XMLHttpRequest();
-                                xhr.open("GET", "${fileName}");
-                                xhr.onreadystatechange = function() {
-                                    if (xhr.readyState === 4) {
-                                        if (xhr.status === 200) {
-                                            resolve(xhr.responseText);
-                                        } else {
-                                            reject(`Error loading ${fileName}: ${xhr.statusText}`);
-                                        }
-                                    }
-                                };
-                                xhr.send();
-                            });
-                        })).then(responses => {
-                            // Concatenate the loaded responses into a single array of lines
-                            responses.forEach(response => {
-                                sorok.push(...response.trim().split('\n'));
-                            });
-
-                            const matchedLines = [];
-                            let maxMatchingVowels = 0;
-
-                            for (const line of sorok) {
-                                const matchingVowels = compareStrings(line, userInput);
-                                if (matchingVowels > maxMatchingVowels) {
-                                    matchedLines.length = 0;
-                                    matchedLines.push(line);
-                                    maxMatchingVowels = matchingVowels;
-                                } else if (matchingVowels === maxMatchingVowels) {
-                                    matchedLines.push(line);
-                                }
-                            }
-
-                            const resultsText = document.createElement("p");
-                            if (maxMatchingVowels > 1) {
-                                const chosenLine = matchedLines[Math.floor(Math.random() * matchedLines.length)];
-                                resultsText.innerText = `Figura: ${chosenLine}`;
-                            } else {
-                                resultsText.innerText = "Nincs meccs a bemenettel.";
-                            }
-                            resultsDiv.innerHTML = "";
-                            resultsDiv.appendChild(resultsText);
-                        }).catch(error => {
-                            const resultsText = document.createElement("p");
-                            resultsText.innerText = error;
-                            resultsDiv.innerHTML = "";
-                            resultsDiv.appendChild(resultsText);
-                        });
-                    } else {
-                        const resultsText = document.createElement("p");
-                        resultsText.innerText = `Error loading directory listing: ${xhr.statusText}`;
-                        resultsDiv.innerHTML = "";
-                        resultsDiv.appendChild(resultsText);
-                    }
-                }
-            };
-            xhr.send();
-        });
+        // Create a new paragraph element to display file information
+        const fileInfoText = document.createElement("p");
+        fileInfoText.style.fontSize = "14px";
+        fileInfoText.style.color = "#666";
+        fileInfoText.innerText = `${resultFileInfo}`;
+        resultsDiv.appendChild(fileInfoText);
+      } else {
+        resultsText.innerText = "Erre még Figura sem talált rímet :(";
+        resultsDiv.innerHTML = "";
+        resultsDiv.appendChild(resultsText);
+      }
+    })
+    .catch(error => {
+      const resultsText = document.createElement("p");
+      resultsText.innerText = error;
+      resultsDiv.innerHTML = "";
+      resultsDiv.appendChild(resultsText);
+    });
+});
     </script></body></html>
