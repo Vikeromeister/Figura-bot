@@ -1,5 +1,6 @@
 <!DOCTYPE html><html><head><title>Figura Rím Bot</title><style>
-		/* CSS styles go here */
+	
+	/* Default CSS style */
 	h1 {
   		font-size: 32px;
 	}
@@ -57,7 +58,7 @@
 		width: 800px;
 	}
 	
-	// Increase font sizes when viewed on a phone
+	/* Mobile CSS style - larger fonts */
 	@media screen and (max-width: 1080px) {
 		h1 {
 			font-size: 60px;
@@ -82,8 +83,9 @@
 			font-size: 45px;
 		}
 	}
+	
 </style></head><body><h1>Figura rím bot</h1><p>Lökj egy sort Figunak!</p><form><input type="text" id="input-text" placeholder=" "><input type="submit" id="submit-button" value="Mehet!"></form><div id="results"></div><script>
-		// JavaScript code to handle the form submission goes here
+// Javascript
 const getVowelsFromString = function(line, no) {
 	const vowels = [];
 	for (let index = line.length - 1; index >= 0; index--) {
