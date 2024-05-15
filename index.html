@@ -194,7 +194,7 @@ submitButton.addEventListener("click", function(event) {
 		}
 	
 		if (matchedLines.length > 0 && maxMatchingVowels > 1) {
-			const chosenLine = matchedLines[Math.floor(Math.random() * matchedLines.length)];
+			let chosenLine = matchedLines[Math.floor(Math.random() * matchedLines.length)];
 			if (chosenLine.includes("//")) {
   				chosenLine = chosenLine.split("//")[0]; // Get part of the string before the //
 			}
