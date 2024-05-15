@@ -93,17 +93,27 @@
 </style></head><body><h1>Figura rím bot</h1><p>Lökj egy sort Figunak!</p><form><input type="text" id="input-text" placeholder=" "><input type="submit" id="submit-button" value="Mehet!"></form><div id="results"></div><script>
 // Javascript
 const getVowelsFromString = function(line, no) {
-	const vowels = [];
-	for (let index = line.length - 1; index >= 0; index--) {
-		const letter = line[index].toLowerCase();
-	    if (["a", "á", "e", "é", "i", "í", "o", "ó", "ö", "ő", "u", "ú", "ü", "ű"].indexOf(letter) !== -1) {
-	    	vowels.unshift(letter);
-	    }
-	    if (vowels.length === no) {
-	    	break;
-	    }
-	}
-	return vowels.join("");
+  const vowels = [];
+  let newLine = line;
+  
+  if (line.includes("//")) {
+    const index = line.indexOf("//");
+    newLine = line.slice(index + 2); // Get part of the string after the //
+  }
+  
+  for (let index = newLine.length - 1; index >= 0; index--) {
+    const letter = newLine[index].toLowerCase();
+  
+    if (["a", "á", "e", "é", "i", "í", "o", "ó", "ö", "ő", "u", "ú", "ü", "ű"].indexOf(letter) !== -1) {
+      vowels.unshift(letter);
+    }
+  
+    if (vowels.length === no) {
+      break;
+    }
+  }
+  
+  return vowels.join("");
 };
 
 const compareStrings = function(line1, line2) {
@@ -183,20 +193,23 @@ submitButton.addEventListener("click", function(event) {
 	  		}
 		}
 	
-		if (matchedLines.length > 0) {
+		if (matchedLines.length > 0 && maxMatchingVowels > 1) {
 			const chosenLine = matchedLines[Math.floor(Math.random() * matchedLines.length)];
+			if (chosenLine.includes("//")) {
+  				chosenLine = chosenLine.split("//")[0]; // Get part of the string before the //
+			}
 			const resultsText = document.createElement("p");
 			resultsText.innerText = `Figura: ${chosenLine}`;
 			resultsDiv.innerHTML = "";
 			resultsDiv.appendChild(resultsText);
 		  	const fileInfoText = document.createElement("p");
-		  	fileInfoText.style.fontSize = "14px";
+		  	fileInfoText.style.fontSize = "16px";
 		  	fileInfoText.style.color = "#666";
 		  	fileInfoText.innerText = `${resultFileInfo}`;
 		  	resultsDiv.appendChild(fileInfoText);
 		} else {
 		  	const resultsText = document.createElement("p");
-			resultsText.innerText = "Nincs meccs a bemenettel.";
+			resultsText.innerText = "Erre még Figura sem talált rímet :(";
 			resultsDiv.innerHTML = "";
 			resultsDiv.appendChild(resultsText);
 		}
