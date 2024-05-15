@@ -4,8 +4,8 @@ Azért hazudok, mert kell nekem még
 Egész éjjel csak azt kenegetném
 Persze hogy lövünk képeket, csak gyere már félre
 Elrabolom a szíved, de majd hazaviszlek éjfélre
-Meghackeltem a tested, rég hozzáférek
-Vegyél please levegőt mikor hozzádérek
+Meghackeltem a tested, rég hozzáférek // meghekkeltem a tested rég hozzáférek
+Vegyél please levegőt mikor hozzádérek // vegyél plíz levegőt mikor hozzádérek
 Elmondom a szándékaim, nem fogok hazudni
 Olyan szelídnek tűnsz, de még ma be fogsz vadulni
 Pár dolgot ma biztosan meg fogsz még tanulni
@@ -17,9 +17,9 @@ Végtelenek a források, én sose fogyok ki
 Féltékeny a barátnőd, hát hívjad őt is el
 Van egy kettő sztorim amit sose hiszel el
 Ránézek a balhéra de sose viszem el
-Hidd el hogy a véleményed televizelem, bro
-Olyanokat cappelsz hogy még te se hiszed el
+Hidd el hogy a véleményed televizelem
+Olyanokat cappelsz hogy még te se hiszed el // olyanokat keppelsz hogy még te se hiszed el
 Azt hiszed hogy elmész, de tesóm kicselez
 Túl sok a szó, beszéljen a sikered
-Hangos a c, ezt hallják a siketek
+Hangos a c, ezt hallják a siketek // hangos a cé ezt hallják a siketek
 Kenegetném, kenegetném
