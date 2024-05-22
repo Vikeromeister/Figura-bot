@@ -168,7 +168,7 @@ submitButton.addEventListener("click", function(event) {
       	});
 
 	    	const matchedLines = [];
-		conts resultFiles = [];
+		const resultFiles = [];
 		let maxMatchingVowels = 0;
 		let resultFileInfo = "";
 	
@@ -197,7 +197,7 @@ submitButton.addEventListener("click", function(event) {
 		}
 	
 		if (matchedLines.length > 0 && maxMatchingVowels > 1) {
-			var indexChosen;
+			var chosenIndex;
 			let index = Math.floor(Math.random() * matchedLines.length)
 			let chosenLine = matchedLines[indexChosen];
 			if (chosenLine.includes("//")) {
@@ -210,13 +210,13 @@ submitButton.addEventListener("click", function(event) {
 		  	const fileInfoText = document.createElement("p");
 		  	fileInfoText.style.fontSize = "16px";
 		  	fileInfoText.style.color = "#666";
-		  	fileInfoText.innerText = `${resultFiles[indexChosen]}`;
+		  	fileInfoText.innerText = `${resultFiles[chosenIndex]}`;
 		  	resultsDiv.appendChild(fileInfoText);
 		} else {
 		  	const resultsText = document.createElement("p");
 			resultsText.innerText = "Erre még Figura sem talált rímet :(";
 			resultsDiv.innerHTML = "";
-			resultsDiv.appendChild(resultsText);
+			sDiv.appendChild(sText);
 		}
 	}).catch(error => {
 	      const resultsText = document.createElement("p");
