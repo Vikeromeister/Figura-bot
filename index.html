@@ -167,7 +167,8 @@ submitButton.addEventListener("click", function(event) {
         	sorok.push(...response.trim().split("\n"));
       	});
 
-	    const matchedLines = [];
+	    	const matchedLines = [];
+		conts resultFiles = [];
 		let maxMatchingVowels = 0;
 		let resultFileInfo = "";
 	
@@ -183,18 +184,22 @@ submitButton.addEventListener("click", function(event) {
 	      			const matchingVowels = compareStrings(line, userInput);
 	      			if (matchingVowels > maxMatchingVowels) {
 				        matchedLines.length = 0;
+					resultFiles.length = 0;
 				        matchedLines.push(line);
+					resultFiles.push(fileName.split('/').pop().split('.').slice(0, -1).join('.'));
 				        maxMatchingVowels = matchingVowels;
-				        resultFileInfo = fileName.split('/').pop().split('.').slice(0, -1).join('.');
 	      			} else if (matchingVowels === maxMatchingVowels) {
 	        			matchedLines.push(line);
+					resultFiles.push(fileName.split('/').pop().split('.').slice(0, -1).join('.'));
 	      			}
 	    		});
 	  		}
 		}
 	
 		if (matchedLines.length > 0 && maxMatchingVowels > 1) {
-			let chosenLine = matchedLines[Math.floor(Math.random() * matchedLines.length)];
+			var indexChosen;
+			let index = Math.floor(Math.random() * matchedLines.length)
+			let chosenLine = matchedLines[indexChosen];
 			if (chosenLine.includes("//")) {
   				chosenLine = chosenLine.split("//")[0]; // Get part of the string before the //
 			}
@@ -205,7 +210,7 @@ submitButton.addEventListener("click", function(event) {
 		  	const fileInfoText = document.createElement("p");
 		  	fileInfoText.style.fontSize = "16px";
 		  	fileInfoText.style.color = "#666";
-		  	fileInfoText.innerText = `${resultFileInfo}`;
+		  	fileInfoText.innerText = `${resultFiles[indexChosen]}`;
 		  	resultsDiv.appendChild(fileInfoText);
 		} else {
 		  	const resultsText = document.createElement("p");
