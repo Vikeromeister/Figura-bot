@@ -197,7 +197,7 @@ submitButton.addEventListener("click", function(event) {
 		}
 	
 		if (matchedLines.length > 0 && maxMatchingVowels > 1) {
-			var chosenIndex;
+			const chosenIndex;
 			let chosenIndex = Math.floor(Math.random() * matchedLines.length)
 			let chosenLine = matchedLines[chosenIndex];
 			if (chosenLine.includes("//")) {
