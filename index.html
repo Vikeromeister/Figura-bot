@@ -149,7 +149,7 @@ submitButton.addEventListener("click", function(event) {
     xhr.onreadystatechange = function() {
         if (xhr.readyState === 4) {
             if (xhr.status === 200) {
-                const songsData = JSON.parse(xhr.responseText).songs; // Access the songs array
+                const songsData = JSON.parse(xhr.responseText); // Access the songs array
                 console.log("Loaded songs data:", songsData); // Check the loaded data
 
                 // Loop through the songs and extract lyrics
