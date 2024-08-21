@@ -132,96 +132,79 @@ const submitButton = document.getElementById("submit-button");
 const resultsDiv = document.getElementById("results");
 
 // Define an array of file paths to load
-const fileNames = ["szovegek/Szőlő.txt", "szovegek/Fenomén.txt", "szovegek/Hendi.txt", "szovegek/Sebestyén 40.txt", "szovegek/Lee Cooper.txt", "szovegek/Déli Babe.txt", "szovegek/Mufasa.txt", "szovegek/Bocelli.txt", "szovegek/Gange.txt", "szovegek/Rajna.txt", "szovegek/1234.txt", "szovegek/40.txt", "szovegek/Ahha.txt", "szovegek/Cap.txt", "szovegek/Crisps.txt", "szovegek/Capri Sun.txt", "szovegek/Csermely.txt", "szovegek/Fala Fel.txt", "szovegek/Faszerdő.txt", "szovegek/Finoma.txt", "szovegek/Fing.txt", "szovegek/HSP.txt", "szovegek/Hétfő.txt", "szovegek/Johnny Test.txt", "szovegek/Jégkori.txt", "szovegek/Kapufa.txt", "szovegek/Kenet.txt", "szovegek/Meredek.txt", "szovegek/Miss.txt", "szovegek/Nutella.txt", "szovegek/OMG.txt", "szovegek/Offbeat.txt", "szovegek/Oh no.txt", "szovegek/Pizsi.txt", "szovegek/Puli.txt", "szovegek/Puma.txt", "szovegek/Pápa.txt", "szovegek/Sasuke.txt", "szovegek/Sió.txt", "szovegek/Sloppy.txt", "szovegek/Szerbia.txt", "szovegek/Szúnyog.txt", "szovegek/Tenet.txt", "szovegek/Zsé.txt"];
+// const fileNames = ["szovegek/Szőlő.txt", "szovegek/Fenomén.txt", "szovegek/Hendi.txt", "szovegek/Sebestyén 40.txt", "szovegek/Lee Cooper.txt", "szovegek/Déli Babe.txt", "szovegek/Mufasa.txt", "szovegek/Bocelli.txt", "szovegek/Gange.txt", "szovegek/Rajna.txt", "szovegek/1234.txt", "szovegek/40.txt", "szovegek/Ahha.txt", "szovegek/Cap.txt", "szovegek/Crisps.txt", "szovegek/Capri Sun.txt", "szovegek/Csermely.txt", "szovegek/Fala Fel.txt", "szovegek/Faszerdő.txt", "szovegek/Finoma.txt", "szovegek/Fing.txt", "szovegek/HSP.txt", "szovegek/Hétfő.txt", "szovegek/Johnny Test.txt", "szovegek/Jégkori.txt", "szovegek/Kapufa.txt", "szovegek/Kenet.txt", "szovegek/Meredek.txt", "szovegek/Miss.txt", "szovegek/Nutella.txt", "szovegek/OMG.txt", "szovegek/Offbeat.txt", "szovegek/Oh no.txt", "szovegek/Pizsi.txt", "szovegek/Puli.txt", "szovegek/Puma.txt", "szovegek/Pápa.txt", "szovegek/Sasuke.txt", "szovegek/Sió.txt", "szovegek/Sloppy.txt", "szovegek/Szerbia.txt", "szovegek/Szúnyog.txt", "szovegek/Tenet.txt", "szovegek/Zsé.txt"];
+const jsonFile = "songs.json"
 
 submitButton.addEventListener("click", function(event) {
-	event.preventDefault();
+    event.preventDefault();
+    const userInput = inputText.value.trim();
+    if (userInput === "") {
+        return;
+    }
+    const sorok = []; // Create an empty array for the lines to be loaded
 
-	const userInput = inputText.value.trim();
-	if (userInput === "") {
-		return;
-	}
-	const sorok = []; // Create an empty array for the lines to be loaded
+    // Load the JSON file asynchronously
+    const xhr = new XMLHttpRequest();
+    xhr.open("GET", jsonFile);
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState === 4) {
+            if (xhr.status === 200) {
+                const songsData = JSON.parse(xhr.responseText);
+                
+                // Loop through the songs and extract lyrics
+                songsData.forEach(song => {
+                    sorok.push(...song.lyrics.trim().split("\n"));
+                });
 
-  	// Use a Promise.all() call to load all files asynchronously
-  	Promise.all(
-    	fileNames.map(fileName => {
-      		return new Promise((resolve, reject) => {
-        		const xhr = new XMLHttpRequest();
-        		xhr.open("GET", fileName);
-        		xhr.onreadystatechange = function() {
-          			if (xhr.readyState === 4) {
-            			if (xhr.status === 200) {
-              				resolve(xhr.responseText);
-            			} else {
-              				reject(`Error loading ${fileName}: ${xhr.statusText}`);
-            			}
-         		 	}
-        		};
-        		xhr.send();
-      		});
-    	})
-  	).then(responses => {
-		// Concatenate the loaded responses into a single array of lines
-      	responses.forEach(response => {
-        	sorok.push(...response.trim().split("\n"));
-      	});
+                const matchedLines = [];
+                const resultFiles = [];
+                let maxMatchingVowels = 0;
 
-	    	const matchedLines = [];
-		const resultFiles = [];
-		let maxMatchingVowels = 0;
-		let resultFileInfo = "";
-	
-		for (let i = 0; i < fileNames.length; i++) {
-	  		const fileName = fileNames[i];
-	  		const xhr = new XMLHttpRequest();
-	  		xhr.open("GET", fileName, false);
-	  		xhr.send(null);
-	  		if (xhr.status === 200) {
-	    		const fileContent = xhr.responseText;
-	          
-	    		fileContent.split('\n').forEach(line => {
-	      			const matchingVowels = compareStrings(line, userInput);
-	      			if (matchingVowels > maxMatchingVowels) {
-				        matchedLines.length = 0;
-					resultFiles.length = 0;
-				        matchedLines.push(line);
-					resultFiles.push(fileName.split('/').pop().split('.').slice(0, -1).join('.'));
-				        maxMatchingVowels = matchingVowels;
-	      			} else if (matchingVowels === maxMatchingVowels) {
-	        			matchedLines.push(line);
-					resultFiles.push(fileName.split('/').pop().split('.').slice(0, -1).join('.'));
-	      			}
-	    		});
-	  		}
-		}
-	
-		if (matchedLines.length > 0 && maxMatchingVowels > 1) {
-			let chosenIndex = Math.floor(Math.random() * matchedLines.length);
-			let chosenLine = matchedLines[chosenIndex];
-			if (chosenLine.includes("//")) {
-  				chosenLine = chosenLine.split("//")[0]; // Get part of the string before the //
-			}
-			const resultsText = document.createElement("p");
-			resultsText.innerText = `Figura: ${chosenLine}`;
-			resultsDiv.innerHTML = "";
-			resultsDiv.appendChild(resultsText);
-		  	const fileInfoText = document.createElement("p");
-		  	fileInfoText.style.fontSize = "16px";
-		  	fileInfoText.style.color = "#666";
-		  	fileInfoText.innerText = `${resultFiles[chosenIndex]}`;
-		  	resultsDiv.appendChild(fileInfoText);
-		} else {
-		  	const resultsText = document.createElement("p");
-			resultsText.innerText = "Erre még Figura sem talált rímet :(";
-			resultsDiv.innerHTML = "";
-			sDiv.appendChild(sText);
-		}
-	}).catch(error => {
-	      const resultsText = document.createElement("p");
-	      resultsText.innerText = error;
-	      resultsDiv.innerHTML = "";
-	      resultsDiv.appendChild(resultsText);
-	    });
-	});
+                // Process the lyrics to find matching lines
+                sorok.forEach(line => {
+                    const matchingVowels = compareStrings(line, userInput);
+                    if (matchingVowels > maxMatchingVowels) {
+                        matchedLines.length = 0;
+                        resultFiles.length = 0;
+                        matchedLines.push(line);
+                        resultFiles.push(song.title); // Use song title as file info
+                        maxMatchingVowels = matchingVowels;
+                    } else if (matchingVowels === maxMatchingVowels) {
+                        matchedLines.push(line);
+                        resultFiles.push(song.title);
+                    }
+                });
+
+                if (matchedLines.length > 0 && maxMatchingVowels > 1) {
+                    let chosenIndex = Math.floor(Math.random() * matchedLines.length);
+                    let chosenLine = matchedLines[chosenIndex];
+                    if (chosenLine.includes("//")) {
+                        chosenLine = chosenLine.split("//")[0]; // Get part of the string before the //
+                    }
+                    const resultsText = document.createElement("p");
+                    resultsText.innerText = `Figura: ${chosenLine}`;
+                    resultsDiv.innerHTML = "";
+                    resultsDiv.appendChild(resultsText);
+
+                    const fileInfoText = document.createElement("p");
+                    fileInfoText.style.fontSize = "16px";
+                    fileInfoText.style.color = "#666";
+                    fileInfoText.innerText = `${resultFiles[chosenIndex]}`;
+                    resultsDiv.appendChild(fileInfoText);
+                } else {
+                    const resultsText = document.createElement("p");
+                    resultsText.innerText = "Erre még Figura sem talált rímet :(";
+                    resultsDiv.innerHTML = "";
+                    resultsDiv.appendChild(resultsText);
+                }
+            } else {
+                const resultsText = document.createElement("p");
+                resultsText.innerText = `Error loading JSON: ${xhr.statusText}`;
+                resultsDiv.innerHTML = "";
+                resultsDiv.appendChild(resultsText);
+            }
+        }
+    };
+    xhr.send();
+});
     </script></body></html>
