@@ -140,7 +140,7 @@ submitButton.addEventListener("click", function(event) {
     if (userInput === "") {
         return;
     }
-    
+
     const sorok = []; // Create an empty array for the lines to be loaded
 
     // Load the JSON file asynchronously
@@ -149,9 +149,9 @@ submitButton.addEventListener("click", function(event) {
     xhr.onreadystatechange = function() {
         if (xhr.readyState === 4) {
             if (xhr.status === 200) {
-                const songsData = JSON.parse(xhr.responseText);
+                const songsData = JSON.parse(xhr.responseText).songs; // Access the songs array
                 console.log("Loaded songs data:", songsData); // Check the loaded data
-                
+
                 // Loop through the songs and extract lyrics
                 songsData.forEach(song => {
                     console.log(`Processing song: ${song.title}`); // Debugging
@@ -174,11 +174,18 @@ submitButton.addEventListener("click", function(event) {
                         matchedLines.length = 0;
                         resultFiles.length = 0;
                         matchedLines.push(line);
-                        resultFiles.push(song.title); // Use song title for file info
+                        // Get the song title that corresponds to the line
+                        const songInfo = songsData.find(song => song.lyrics.includes(line));
+                        if (songInfo) {
+                            resultFiles.push(songInfo.title); // Use song title for file info
+                        }
                         maxMatchingVowels = matchingVowels;
                     } else if (matchingVowels === maxMatchingVowels) {
                         matchedLines.push(line);
-                        resultFiles.push(song.title);
+                        const songInfo = songsData.find(song => song.lyrics.includes(line)); 
+                        if (songInfo) {
+                            resultFiles.push(songInfo.title);
+                        }
                     }
                 });
 
@@ -214,4 +221,4 @@ submitButton.addEventListener("click", function(event) {
     };
     xhr.send();
 });
-    </script></body></html>
+</script></body></html>
