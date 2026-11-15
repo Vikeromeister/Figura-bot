@@ -131,8 +131,38 @@ const inputText = document.getElementById("input-text");
 const submitButton = document.getElementById("submit-button");
 const resultsDiv = document.getElementById("results");
 
-// Define an array of file paths to load
-const jsonFile = "songs.json"
+// Define the song index path to load individual song JSON files
+const songIndexFile = "songs/index.json";
+let cachedSongsPromise = null;
+
+const loadSongs = function() {
+    if (!cachedSongsPromise) {
+        cachedSongsPromise = fetch(songIndexFile)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`Error loading song index: ${response.statusText}`);
+                }
+                return response.json();
+            })
+            .then(fileNames => {
+                return Promise.all(
+                    fileNames.map(fileName =>
+                        fetch(`songs/${encodeURIComponent(fileName)}`).then(response => {
+                            if (!response.ok) {
+                                throw new Error(`Error loading ${fileName}: ${response.statusText}`);
+                            }
+                            return response.json();
+                        })
+                    )
+                );
+            })
+            .catch(error => {
+                cachedSongsPromise = null;
+                throw error;
+            });
+    }
+    return cachedSongsPromise;
+};
 
 submitButton.addEventListener("click", function(event) {
     event.preventDefault();
@@ -141,84 +171,70 @@ submitButton.addEventListener("click", function(event) {
         return;
     }
 
-    const sorok = []; // Create an empty array for the lines to be loaded
+    loadSongs()
+        .then(songsData => {
+            console.log("Loaded songs data:", songsData);
 
-    // Load the JSON file asynchronously
-    const xhr = new XMLHttpRequest();
-    xhr.open("GET", jsonFile);
-    xhr.onreadystatechange = function() {
-        if (xhr.readyState === 4) {
-            if (xhr.status === 200) {
-                const songsData = JSON.parse(xhr.responseText); // Access the songs array
-                console.log("Loaded songs data:", songsData); // Check the loaded data
+            const matchedLines = [];
+            const resultFiles = [];
+            let maxMatchingVowels = 0;
 
-                // Loop through the songs and extract lyrics
-                songsData.forEach(song => {
-                    console.log(`Processing song: ${song.title}`); // Debugging
+            songsData.forEach(song => {
+                if (!song.lyrics) {
+                    console.warn(`No lyrics found for ${song.title}`);
+                    return;
+                }
+                const lines = Array.isArray(song.lyrics)
+                    ? song.lyrics
+                    : song.lyrics.trim().split("\n");
 
-                    if (song.lyrics) {
-                        sorok.push(...song.lyrics.trim().split("\n"));
-                    } else {
-                        console.warn(`No lyrics found for ${song.title}`); // Warning if lyrics are missing
+                lines.forEach(rawLine => {
+                    const line = rawLine.trim();
+                    if (line === "") {
+                        return;
                     }
-                });
-
-                const matchedLines = [];
-                const resultFiles = [];
-                let maxMatchingVowels = 0;
-
-                // Process the lyrics to find matching lines
-                sorok.forEach(line => {
                     const matchingVowels = compareStrings(line, userInput);
                     if (matchingVowels > maxMatchingVowels) {
                         matchedLines.length = 0;
                         resultFiles.length = 0;
                         matchedLines.push(line);
-                        // Get the song title that corresponds to the line
-                        const songInfo = songsData.find(song => song.lyrics.includes(line));
-                        if (songInfo) {
-                            resultFiles.push(songInfo.title); // Use song title for file info
-                        }
+                        resultFiles.push(song.title);
                         maxMatchingVowels = matchingVowels;
-                    } else if (matchingVowels === maxMatchingVowels) {
+                    } else if (matchingVowels > 0 && matchingVowels === maxMatchingVowels) {
                         matchedLines.push(line);
-                        const songInfo = songsData.find(song => song.lyrics.includes(line)); 
-                        if (songInfo) {
-                            resultFiles.push(songInfo.title);
-                        }
+                        resultFiles.push(song.title);
                     }
                 });
+            });
 
-                if (matchedLines.length > 0 && maxMatchingVowels > 1) {
-                    let chosenIndex = Math.floor(Math.random() * matchedLines.length);
-                    let chosenLine = matchedLines[chosenIndex];
-                    if (chosenLine.includes("//")) {
-                        chosenLine = chosenLine.split("//")[0]; // Get part of the string before the //
-                    }
-                    const resultsText = document.createElement("p");
-                    resultsText.innerText = `Figura: ${chosenLine}`;
-                    resultsDiv.innerHTML = "";
-                    resultsDiv.appendChild(resultsText);
-
-                    const fileInfoText = document.createElement("p");
-                    fileInfoText.style.fontSize = "16px";
-                    fileInfoText.style.color = "#666";
-                    fileInfoText.innerText = `${resultFiles[chosenIndex]}`;
-                    resultsDiv.appendChild(fileInfoText);
-                } else {
-                    const resultsText = document.createElement("p");
-                    resultsText.innerText = "Erre még Figura sem talált rímet :(";
-                    resultsDiv.innerHTML = "";
-                    resultsDiv.appendChild(resultsText);
+            if (matchedLines.length > 0 && maxMatchingVowels > 1) {
+                const chosenIndex = Math.floor(Math.random() * matchedLines.length);
+                let chosenLine = matchedLines[chosenIndex];
+                if (chosenLine.includes("//")) {
+                    chosenLine = chosenLine.split("//")[0].trim(); // Get part of the string before the //
                 }
+                const resultsText = document.createElement("p");
+                resultsText.innerText = `Figura: ${chosenLine}`;
+                resultsDiv.innerHTML = "";
+                resultsDiv.appendChild(resultsText);
+
+                const fileInfoText = document.createElement("p");
+                fileInfoText.style.fontSize = "16px";
+                fileInfoText.style.color = "#666";
+                fileInfoText.innerText = `${resultFiles[chosenIndex]}`;
+                resultsDiv.appendChild(fileInfoText);
             } else {
                 const resultsText = document.createElement("p");
-                resultsText.innerText = `Error loading JSON: ${xhr.statusText}`;
+                resultsText.innerText = "Erre még Figura sem talált rímet :(";
                 resultsDiv.innerHTML = "";
                 resultsDiv.appendChild(resultsText);
             }
-        }
-    };
-    xhr.send();
+        })
+        .catch(error => {
+            const resultsText = document.createElement("p");
+            resultsText.innerText = error.message || String(error);
+            resultsDiv.innerHTML = "";
+            resultsDiv.appendChild(resultsText);
+        });
 });
 </script></body></html>
